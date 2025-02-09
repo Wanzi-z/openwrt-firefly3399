@@ -314,17 +314,6 @@ endef
 $(eval $(call KernelPackage,sound-soc-spdif))
 
 
-define KernelPackage/sound-soc-dmic
-  TITLE:=Generic Digital Microphone CODEC
-  KCONFIG:=CONFIG_SND_SOC_DMIC
-  FILES:=$(LINUX_DIR)/sound/soc/codecs/snd-soc-dmic.ko
-  AUTOLOAD:=$(call AutoProbe,snd-soc-dmic)
-  $(call AddDepends/sound,+kmod-sound-soc-core)
-endef
-
-$(eval $(call KernelPackage,sound-soc-dmic))
-
-
 define KernelPackage/pcspkr
   DEPENDS:=@TARGET_x86 +kmod-input-core
   TITLE:=PC speaker support
@@ -366,13 +355,15 @@ define KernelPackage/sound-hda-core
 	CONFIG_SND_HDA_CORE \
 	CONFIG_SND_HDA_HWDEP=y \
 	CONFIG_SND_HDA_RECONFIG=n \
+	CONFIG_SND_HDA_SCODEC_COMPONENT=y \
 	CONFIG_SND_HDA_INPUT_BEEP=n \
 	CONFIG_SND_HDA_PATCH_LOADER=n \
 	CONFIG_SND_HDA_GENERIC
   FILES:= \
 	$(LINUX_DIR)/sound/hda/snd-hda-core.ko \
 	$(LINUX_DIR)/sound/pci/hda/snd-hda-codec.ko \
-	$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-generic.ko
+	$(LINUX_DIR)/sound/pci/hda/snd-hda-codec-generic.ko \
+	$(LINUX_DIR)/sound/pci/hda/snd-hda-scodec-component.ko@ge6.12
   AUTOLOAD:=$(call AutoProbe,snd-hda-core snd-hda-codec snd-hda-codec-generic)
   $(call AddDepends/sound,+kmod-regmap-core)
 endef
@@ -580,7 +571,8 @@ define KernelPackage/sound-hda-intel
 	CONFIG_SND_HDA_INTEL
   FILES:= \
 	$(LINUX_DIR)/sound/pci/hda/snd-hda-intel.ko \
-	$(LINUX_DIR)/sound/hda/snd-intel-dspcfg.ko
+	$(LINUX_DIR)/sound/hda/snd-intel-nhlt.ko@lt5.5 \
+	$(LINUX_DIR)/sound/hda/snd-intel-dspcfg.ko@ge5.5
   AUTOLOAD:=$(call AutoProbe,snd-hda-intel)
   $(call AddDepends/sound,kmod-sound-hda-core)
 endef

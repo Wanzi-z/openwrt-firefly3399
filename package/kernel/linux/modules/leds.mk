@@ -118,6 +118,7 @@ $(eval $(call KernelPackage,ledtrig-pattern))
 define KernelPackage/ledtrig-tty
   SUBMENU:=$(LEDS_MENU)
   TITLE:=LED Trigger for TTY devices
+  DEPENDS:=@!(LINUX_5_4||LINUX_5_10)
   KCONFIG:=CONFIG_LEDS_TRIGGER_TTY
   FILES:=$(LED_TRIGGER_DIR)/ledtrig-tty.ko
   AUTOLOAD:=$(call AutoLoad,50,ledtrig-tty)
@@ -147,30 +148,11 @@ endef
 $(eval $(call KernelPackage,leds-apu))
 
 
-define KernelPackage/leds-ktd202x
-  SUBMENU:=LED modules
-  TITLE:=LED support for KTD202x Chips
-  DEPENDS:=+kmod-i2c-core +kmod-regmap-i2c
-  KCONFIG:=CONFIG_LEDS_KTD202X
-  FILES:= $(LINUX_DIR)/drivers/leds/rgb/leds-ktd202x.ko
-  AUTOLOAD:=$(call AutoProbe,leds-ktd202x,1)
-endef
-
-define KernelPackage/leds-ktd202x/description
-  This option enables support for the Kinetic KTD2026/KTD2027
-  RGB/White LED driver found in different BQ mobile phones.
-  It is a 3 or 4 channel LED driver programmed via an I2C interface.
-endef
-
-$(eval $(call KernelPackage,leds-ktd202x))
-
-
 define KernelPackage/leds-mlxcpld
   SUBMENU:=$(LEDS_MENU)
   TITLE:=LED support for the Mellanox boards
-  DEPENDS:=@TARGET_x86
-  KCONFIG:=CONFIG_LEDS_MLXCPLD
   FILES:=$(LINUX_DIR)/drivers/leds/leds-mlxcpld.ko
+  KCONFIG:=CONFIG_LEDS_MLXCPLD
   AUTOLOAD:=$(call AutoProbe,leds-mlxcpld)
 endef
 
